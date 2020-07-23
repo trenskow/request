@@ -44,7 +44,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 				headers,
 				data: JSON.stringify(opt.payload),
 				params: opt.query
-			}).data;
+			});
 		} catch (error) {
 			if (((error.response || {}).data || {}).error) {
 				response = error.response;
