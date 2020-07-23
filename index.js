@@ -78,17 +78,17 @@ exports = module.exports = (baseUrl, options = {}) => {
 	};
 
 	return merge(request, {
-		get: async (path, opt) => {
-			return await request('get', path, opt);
+		get: (path, opt) => {
+			return request('get', path, opt);
 		},
-		post: async (path, opt) => {
-			return await request('post', path, opt);
+		post: (path, opt) => {
+			return request('post', path, opt);
 		},
-		put: async (path, opt) => {
-			return await request('put', path, opt);
+		put: (path, opt) => {
+			return request('put', path, opt);
 		},
-		delete: async (path, opt) => {
-			return await request('delete', path, opt);
+		delete: (path, opt) => {
+			return request('delete', path, opt);
 		}
 	});
 
