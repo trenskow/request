@@ -1,7 +1,7 @@
 {
   "name": "@trenskow/request",
   "version": "0.1.0",
-  "description": "A small request library for usage with APIs that uses the ApiError package.",
+  "description": "A small request library for usage with APIs that uses the `@trenskow/apierror` package.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
