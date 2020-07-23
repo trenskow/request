@@ -39,7 +39,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 	
 			let headers = opt.headers || {};
 
-			if (typeof payload !== 'undefined') {
+			if (typeof opt.payload !== 'undefined') {
 				headers['Content-Type'] = 'application/json; charset=utf-8';
 			}
 	
