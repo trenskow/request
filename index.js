@@ -9,7 +9,7 @@ const
 	CustomPromise = require('@trenskow/custom-promise');
 
 const
-	{ ApiError } = require('@trenskow/apierror');
+	ApiError = require('@trenskow/apierror');
 
 exports = module.exports = (baseUrl, options = {}) => {
 
