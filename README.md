@@ -1,4 +1,4 @@
-request
+@trenskow/request
 ----
 
 A small request library for usage with APIs that uses the [`@trenskow/apierror`](https://npmjs.org/package/@trenskow/apierror) package.
