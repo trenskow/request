@@ -5,7 +5,8 @@ const
 
 const
 	axios = require('axios'),
-	merge = require('merge');
+	merge = require('merge'),
+	CustomPromise = require('@trenskow/custom-promise');
 
 const
 	{ ApiError } = require('@trenskow/apierror');
@@ -18,47 +19,62 @@ exports = module.exports = (baseUrl, options = {}) => {
 		throw new SyntaxError('baseUrl must be a URL or a string containing a URL.');
 	}
 
-	const request = async (method, path, opt) => {
+	class RequestPromise extends CustomPromise {
 
-		path = path || '';
-		opt = opt || {};
+		constructor(method, path, opt) {
+			super();
+			
+			path = path || '';
+	
+			if (Array.isArray(path)) {
+				path = path.map(encodeURIComponent).join('/');
+			}
+			else if (path.indexOf('/') === -1) {
+				path = encodeURIComponent(path);
+			}
+	
+			opt = merge(true, options, opt || {});
 
-		opt = merge(true, options, opt);
-
-		if (Array.isArray(path)) {
-			path = path.map(encodeURIComponent).join('/');
-		}
-		else if (path.indexOf('/') === -1) {
-			path = encodeURIComponent(path);
-		}
-
-		const apiUrl = new URL(path, baseUrl);
-
-		let headers = opt.headers || {};
-
-		let response;
-		try {
-			response = await axios({
+			const apiUrl = new URL(path, baseUrl);
+	
+			let headers = opt.headers || {};
+	
+			const handleResponse = (response) => {
+				if ((((response || {}).data || {}).error)) {
+					this._reject(ApiError.parse(response.data.error, response.status, apiUrl.href));
+				} else {
+					if (this._responseCallback) this._responseCallback(response);
+					this._resolve(response.data);
+				}
+			};
+	
+			axios({
 				method: method,
 				url: apiUrl.href,
 				headers,
 				data: JSON.stringify(opt.payload),
 				params: opt.query
+			}).then((response) => {
+				handleResponse(response);
+			}).catch((error) => {
+				if (((error.response || {}).data || {}).error) {
+					handleResponse(error.response);
+				} else {
+					this._reject(error);
+				}
 			});
-		} catch (error) {
-			if (((error.response || {}).data || {}).error) {
-				response = error.response;
-			} else {
-				throw error;
-			}
+	
 		}
 
-		if ((((response || {}).data || {}).error)) {
-			throw ApiError.parse(response.data.error, response.status, apiUrl.href);
+		onResponse(responseCallback) {
+			this._responseCallback = responseCallback;
+			return this;
 		}
+	
+	}	
 
-		return response;
-
+	const request = (method, path, opt) => {
+		return new RequestPromise(method, path, opt);
 	};
 
 	return merge(request, {
