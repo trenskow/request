@@ -57,7 +57,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 			throw ApiError.parse(response.data.error, response.status, apiUrl.href);
 		}
 
-		return (response || {}).data;
+		return response;
 
 	};
 
