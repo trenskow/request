@@ -38,6 +38,10 @@ exports = module.exports = (baseUrl, options = {}) => {
 			const apiUrl = new URL(path, baseUrl);
 	
 			let headers = opt.headers || {};
+
+			if (typeof payload !== 'undefined') {
+				headers['Content-Type'] = 'application/json; charset=utf-8';
+			}
 	
 			const handleResponse = (response) => {
 				if (this._responseCallback) this._responseCallback(response);
