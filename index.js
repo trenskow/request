@@ -40,10 +40,10 @@ exports = module.exports = (baseUrl, options = {}) => {
 			let headers = opt.headers || {};
 	
 			const handleResponse = (response) => {
+				if (this._responseCallback) this._responseCallback(response);
 				if ((((response || {}).data || {}).error)) {
 					this._reject(ApiError.parse(response.data.error, response.status, apiUrl.href));
 				} else {
-					if (this._responseCallback) this._responseCallback(response);
 					this._resolve(response.data);
 				}
 			};
