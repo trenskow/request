@@ -1,0 +1,32 @@
+{
+  "name": "@trenskow/request",
+  "version": "0.1.0",
+  "description": "A small request library for usage with APIs that uses the ApiError package.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/trenskow/request.git"
+  },
+  "keywords": [
+    "request",
+    "api",
+    "error"
+  ],
+  "author": "Kristian Trenskow <trenskow@me.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/trenskow/request/issues"
+  },
+  "homepage": "https://github.com/trenskow/request#readme",
+  "dependencies": {
+    "@trenskow/apierror": "^2.0.7",
+    "axios": "^0.19.2",
+    "merge": "^1.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0"
+  }
+}
