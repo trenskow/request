@@ -93,6 +93,9 @@ exports = module.exports = (baseUrl, options = {}) => {
 		},
 		delete: (path, opt) => {
 			return request('delete', path, opt);
+		},
+		options: (path, opt) => {
+			return request('options', path, opt);
 		}
 	});
 

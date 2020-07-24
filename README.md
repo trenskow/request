@@ -13,7 +13,7 @@ const request = require('@trenskow/request');
 await request('https://api.mysite.com', { /* options */ }).get('/my/resource', { /* options */});
 ````
 
-> Supported methods: `get`, `post`, `put` and `delete`.
+> Supported methods: `get`, `post`, `put`, `delete` and `options`.
 
 ## Options
 
