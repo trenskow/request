@@ -5,6 +5,9 @@ module.exports = {
 		'mocha': true,
 		'browser': true
 	},
+	'globals': {
+		'globalThis': false
+	},
 	'parserOptions': {
 		'ecmaVersion': 2017
 	},

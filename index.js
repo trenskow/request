@@ -1,7 +1,7 @@
 'use strict';
 
 let
-	URL = (window || {}).URL;
+	URL = (globalThis || {}).URL;
 
 if (!URL) {
 	URL = require('url').URL;
