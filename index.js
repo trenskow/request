@@ -13,10 +13,6 @@ const
 
 exports = module.exports = (baseUrl, options = {}) => {
 
-	if (typeof baseUrl === 'string') {
-		baseUrl = new URL(baseUrl);
-	}
-
 	class RequestPromise extends CustomPromise {
 
 		constructor(method, path, opt) {
