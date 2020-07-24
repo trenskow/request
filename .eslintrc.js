@@ -2,7 +2,8 @@ module.exports = {
 	'env': {
 		'es6': true,
 		'node': true,
-		'mocha': true
+		'mocha': true,
+		'browser': true
 	},
 	'parserOptions': {
 		'ecmaVersion': 2017

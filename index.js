@@ -1,7 +1,11 @@
 'use strict';
 
-const
-	{ URL } = require('url');
+let
+	URL = (window || {}).URL;
+
+if (!URL) {
+	URL = require('url').URL;
+}
 
 const
 	axios = require('axios'),
@@ -12,6 +16,10 @@ const
 	ApiError = require('@trenskow/apierror');
 
 exports = module.exports = (baseUrl, options = {}) => {
+
+	if (baseUrl === 'string') {
+		baseUrl = new URL(baseUrl);
+	}
 
 	class RequestPromise extends CustomPromise {
 
