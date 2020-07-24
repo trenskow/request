@@ -13,10 +13,8 @@ const
 
 exports = module.exports = (baseUrl, options = {}) => {
 
-	try {
+	if (typeof baseUrl === 'string') {
 		baseUrl = new URL(baseUrl);
-	} catch (_) {
-		throw new SyntaxError('baseUrl must be a URL or a string containing a URL.');
 	}
 
 	class RequestPromise extends CustomPromise {
