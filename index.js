@@ -35,7 +35,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 				path = encodeURIComponent(path);
 			}
 	
-			opt = merge(true, options, opt || {});
+			opt = merge.recursive(true, options, opt || {});
 
 			const apiUrl = new URL(path, baseUrl);
 	
