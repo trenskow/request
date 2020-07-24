@@ -46,14 +46,16 @@ exports = module.exports = (baseUrl, options = {}) => {
 			}
 	
 			const handleResponse = (response) => {
-				if (this._responseCallback) this._responseCallback(response);
 				if ((((response || {}).data || {}).error)) {
 					this._reject(ApiError.parse(response.data.error, response.status, apiUrl.href));
 				} else {
 					this._resolve(response.data);
 				}
 			};
-	
+
+			let originalResponse;
+			let originalError;
+
 			axios({
 				method: method,
 				url: apiUrl.href,
@@ -61,7 +63,19 @@ exports = module.exports = (baseUrl, options = {}) => {
 				data: JSON.stringify(opt.payload),
 				params: opt.query
 			}).then((response) => {
-				handleResponse(response);
+				originalResponse = response;
+				if (!this._responseCallback) return originalResponse;
+				return Promise.resolve(this._responseCallback(originalResponse));
+			}).then((response) => {
+				handleResponse(response || originalResponse);
+			}).catch((error) => {
+				originalError = error;
+				originalResponse = error.response;
+				if (!this._responseCallback) throw error;
+				return Promise.resolve(this._responseCallback(error.response));
+			}).then((response) => {
+				originalError.response = response || originalResponse;
+				throw originalError;
 			}).catch((error) => {
 				if (((error.response || {}).data || {}).error) {
 					handleResponse(error.response);
@@ -69,7 +83,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 					this._reject(error);
 				}
 			});
-	
+
 		}
 
 		onResponse(responseCallback) {
