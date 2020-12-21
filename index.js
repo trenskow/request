@@ -43,7 +43,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			if (typeof opt.payload !== 'undefined') {
 				if (Buffer.isBuffer(opt.payload)) {
-					headers['Content-Type'] = options.contentType;
+					headers['Content-Type'] = opt.contentType;
 				} else {
 					headers['Content-Type'] = 'application/json; charset=utf-8';
 				}
