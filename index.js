@@ -42,7 +42,11 @@ exports = module.exports = (baseUrl, options = {}) => {
 			let headers = opt.headers || {};
 
 			if (typeof opt.payload !== 'undefined') {
-				headers['Content-Type'] = 'application/json; charset=utf-8';
+				if (Buffer.isBuffer(opt.payload)) {
+					headers['Content-Type'] = options.contentType;
+				} else {
+					headers['Content-Type'] = 'application/json; charset=utf-8';
+				}
 			}
 	
 			const handleResponse = (response) => {
