@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/trenskow/request#readme",
   "dependencies": {
-    "@trenskow/apierror": "^2.0.7",
+    "@trenskow/apierror": "^2.1.2",
     "@trenskow/custom-promise": "^0.9.1",
     "axios": "^0.19.2",
     "merge": "^1.2.1"
   },
   "devDependencies": {
-    "eslint": "^7.5.0"
+    "eslint": "^7.16.0"
   }
 }
