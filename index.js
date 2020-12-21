@@ -46,6 +46,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 					headers['Content-Type'] = opt.contentType;
 				} else {
 					headers['Content-Type'] = 'application/json; charset=utf-8';
+					opt.payload = JSON.stringify(opt.payload);
 				}
 			}
 	
@@ -64,7 +65,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 				method: method,
 				url: apiUrl.href,
 				headers,
-				data: JSON.stringify(opt.payload),
+				data: opt.payload,
 				params: opt.query
 			}).then((response) => {
 				originalResponse = response;
