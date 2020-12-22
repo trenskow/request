@@ -66,7 +66,13 @@ exports = module.exports = (baseUrl, options = {}) => {
 				url: apiUrl.href,
 				headers,
 				data: opt.payload,
-				params: opt.query
+				params: opt.query,
+				responseType: 'arraybuffer'
+			}).then((response) => {
+				if (/^application\/json/.test(response.headers['content-type'])) {
+					response.data = JSON.parse(response.data);
+				}
+				return response;
 			}).then((response) => {
 				originalResponse = response;
 				if (!this._responseCallback) return originalResponse;

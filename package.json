@@ -1,6 +1,6 @@
 {
   "name": "@trenskow/request",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "description": "A small request library for usage with APIs that uses the `@trenskow/apierror` package.",
   "main": "index.js",
   "scripts": {
