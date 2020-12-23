@@ -58,6 +58,13 @@ exports = module.exports = (baseUrl, options = {}) => {
 				}
 			};
 
+			const convertResponse = (response) => {
+				if (/^application\/json/.test(response.headers['content-type'])) {
+					response.data = JSON.parse(response.data);
+				}
+				return response;
+			};
+
 			let originalResponse;
 			let originalError;
 
@@ -67,33 +74,34 @@ exports = module.exports = (baseUrl, options = {}) => {
 				headers,
 				data: opt.payload,
 				params: opt.query,
-				responseType: 'arraybuffer'
-			}).then((response) => {
-				if (/^application\/json/.test(response.headers['content-type'])) {
-					response.data = JSON.parse(response.data);
-				}
-				return response;
-			}).then((response) => {
-				originalResponse = response;
-				if (!this._responseCallback) return originalResponse;
-				return Promise.resolve(this._responseCallback(originalResponse));
-			}).then((response) => {
-				handleResponse(response || originalResponse);
-			}).catch((error) => {
-				originalError = error;
-				originalResponse = error.response;
-				if (!this._responseCallback) throw error;
-				return Promise.resolve(this._responseCallback(error.response));
-			}).then((response) => {
-				originalError.response = response || originalResponse;
-				throw originalError;
-			}).catch((error) => {
-				if (((error.response || {}).data || {}).error) {
-					handleResponse(error.response);
-				} else {
-					this._reject(error);
-				}
-			});
+				responseType: 'arraybuffer'})
+				.then(convertResponse)
+				.then((response) => {
+					originalResponse = response;
+					if (!this._responseCallback) return originalResponse;
+					return Promise.resolve(this._responseCallback(originalResponse));
+				})
+				.then((response) => {
+					handleResponse(response || originalResponse);
+				})
+				.catch((error) => {
+					originalError = error;
+					originalResponse = error.response;
+					error.response = convertResponse(error.response);
+					if (!this._responseCallback) throw error;
+					return Promise.resolve(this._responseCallback(error.response));
+				})
+				.then((response) => {
+					originalError.response = response || originalResponse;
+					throw originalError;
+				})
+				.catch((error) => {
+					if (((error.response || {}).data || {}).error) {
+						handleResponse(error.response);
+					} else {
+						this._reject(error);
+					}
+				});
 
 		}
 
