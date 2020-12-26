@@ -96,13 +96,15 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 		async _handleError(error) {
 
+			if (!(error.response)) throw error;
+
+			error.response = this._responseCallback ? (await Promise.resolve(this._responseCallback(error.response, error)) || error.response) : error.response;
+			
 			if (!(error.response || {}).data) throw error;
 
 			if (this._resultType === 'stream') error.response.data = await streamReader(error.response.data);
 
 			error.response = this._convertResponse(error.response.data.toString());
-
-			if (this._responseCallback) error.response = await Promise.resolve(this._responseCallback(error.response, error)) || error.response;
 
 			if (!(error.response.data || {}).error) throw error;
 
@@ -112,9 +114,9 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 		async _handleResponse(response) {
 
-			if (this._resultType === 'stream') return response.data;
+			response = this._responseCallback ? (await Promise.resolve(this._responseCallback(response)) || response) : response;
 
-			if (this._responseCallback) response = await Promise.resolve(this._responseCallback(response)) || response;
+			if (this._resultType === 'stream') return response.data;
 
 			const buffer = response.data;
 
