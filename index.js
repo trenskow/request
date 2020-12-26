@@ -104,7 +104,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			if (this._resultType === 'stream') error.response.data = await streamReader(error.response.data);
 
-			error.response = this._convertResponse(error.response.data.toString());
+			error.response = this._convertResponse(error.response);
 
 			if (!(error.response.data || {}).error) throw error;
 
