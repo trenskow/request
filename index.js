@@ -100,7 +100,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			error.response = this._convertResponse(error.response.data.toString());
 
-			if (this._responseCallback) error.response = await Promise.resolve(this._responseCallback(error.response)) || error.response;
+			if (this._responseCallback) error.response = await Promise.resolve(this._responseCallback(error.response, error)) || error.response;
 
 			if (!(error.response.data || {}).error) throw error;
 
@@ -112,7 +112,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			if (this._resultType === 'stream') return response.data;
 
-			if (this._responseCallback) response = this._responseCallback(response) || response;
+			if (this._responseCallback) response = await Promise.resolve(this._responseCallback(response)) || response;
 
 			const buffer = response.data;
 
