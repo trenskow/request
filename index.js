@@ -1,16 +1,17 @@
 'use strict';
 
-let
-	URL = (globalThis || {}).URL;
+const
+	{ isBrowser } = require('browser-or-node');
 
-if (!URL) {
-	URL = require('url').URL;
-}
+const
+	URL = isBrowser ? window.URL : require('url').URL;
 
 const
 	axios = require('axios'),
 	merge = require('merge'),
-	CustomPromise = require('@trenskow/custom-promise');
+	CustomPromise = require('@trenskow/custom-promise'),
+	streamReader = require('@trenskow/stream-reader'),
+	isStream = require('is-stream');
 
 const
 	ApiError = require('@trenskow/apierror');
@@ -37,77 +38,102 @@ exports = module.exports = (baseUrl, options = {}) => {
 	
 			opt = merge.recursive(true, options, opt || {});
 
-			const apiUrl = new URL(path, baseUrl);
+			this._apiUrl = new URL(path, baseUrl);
 	
-			let headers = opt.headers || {};
+			this._headers = opt.headers || {};
+			this._payload = opt.payload;
+			this._query = opt.query;
+
+			this._method = method;
+
+			this._resultType = 'parsed';
 
 			if (typeof opt.payload !== 'undefined') {
-				if (Buffer.isBuffer(opt.payload)) {
-					headers['Content-Type'] = opt.contentType;
+				if (Buffer.isBuffer(opt.payload) || isStream.readable(opt.payload)) {
+					this._headers['Content-Type'] = opt.contentType;
 				} else {
-					headers['Content-Type'] = 'application/json; charset=utf-8';
+					this._headers['Content-Type'] = 'application/json; charset=utf-8';
 					opt.payload = JSON.stringify(opt.payload);
 				}
 			}
-	
-			const handleResponse = (response) => {
-				if ((((response || {}).data || {}).error)) {
-					this._reject(ApiError.parse(response.data.error, response.status, apiUrl.href));
-				} else {
-					this._resolve(response.data);
-				}
-			};
 
-			const convertResponse = (response) => {
-				if (/^application\/json/.test(response.headers['content-type'])) {
-					response.data = JSON.parse(response.data);
-				}
-				return response;
-			};
+			setImmediate(() => {
 
-			let originalResponse;
-			let originalError;
+				this._exec()
+					.then((result) => this._resolve(result))
+					.catch((error) => this._reject(error));
 
-			axios({
-				method: method,
-				url: apiUrl.href,
-				headers,
-				data: opt.payload,
-				params: opt.query,
-				responseType: 'arraybuffer'})
-				.then(convertResponse)
-				.then((response) => {
-					originalResponse = response;
-					if (!this._responseCallback) return originalResponse;
-					return Promise.resolve(this._responseCallback(originalResponse));
-				})
-				.then((response) => {
-					handleResponse(response || originalResponse);
-				})
-				.catch((error) => {
-					originalError = error;
-					originalResponse = error.response;
-					error.response = convertResponse(error.response);
-					if (!this._responseCallback) throw error;
-					return Promise.resolve(this._responseCallback(error.response));
-				})
-				.then((response) => {
-					originalError.response = response || originalResponse;
-					throw originalError;
-				})
-				.catch((error) => {
-					if (((error.response || {}).data || {}).error) {
-						handleResponse(error.response);
-					} else {
-						this._reject(error);
-					}
-				});
+			});
 
 		}
 
 		onResponse(responseCallback) {
 			this._responseCallback = responseCallback;
 			return this;
+		}
+
+		asStream() {
+			if (isBrowser) throw new Error('Streaming is not supported in the browser.');
+			this._resultType = 'stream';
+		}
+
+		asBuffer() {
+			this._resultType = 'buffer';
+		}
+
+		_isJSON(response) {
+			return /^application\/json/.test(response.headers['content-type']);
+		}
+
+		_convertResponse(response) {
+			if (/^application\/json/.test(response.headers['content-type'])) {
+				response.data = JSON.parse(response.data);
+			}
+			return response;
+		}
+
+		async _handleError(error) {
+
+			if (!(error.response || {}).data) throw error;
+
+			if (this._resultType === 'stream') error.response.data = await streamReader(error.response.data);
+
+			error.response = this._convertResponse(error.response.data.toString());
+
+			if (this._responseCallback) error.response = await Promise.resolve(this._responseCallback(error.response)) || error.response;
+
+			if (!(error.response.data || {}).error) throw error;
+
+			throw ApiError.parse(error.response.data.error, error.response.status, this._apiUrl.href);
+
+		}
+
+		async _handleResponse(response) {
+
+			if (this._resultType === 'stream') return response.data;
+
+			if (this._responseCallback) response = this._responseCallback(response) || response;
+
+			const buffer = response.data;
+
+			if (this._resultType === 'buffer') return buffer;
+
+			return this._convertResponse(response).data;
+
+		}
+
+		async _exec() {
+			try {
+				await this._handleResponse(await axios({
+					method: this._method,
+					url: this._apiUrl.href,
+					headers: this._headers,
+					data: this._payload,
+					params: this._query,
+					responseType: this._resultType === 'stream' ? 'stream' : 'arraybuffer'}));
+			} catch (error) {
+				await this._handleError(error);
+			}
 		}
 	
 	}	
