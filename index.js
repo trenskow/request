@@ -75,10 +75,12 @@ exports = module.exports = (baseUrl, options = {}) => {
 		asStream() {
 			if (isBrowser) throw new Error('Streaming is not supported in the browser.');
 			this._resultType = 'stream';
+			return this;
 		}
 
 		asBuffer() {
 			this._resultType = 'buffer';
+			return this;
 		}
 
 		_isJSON(response) {
