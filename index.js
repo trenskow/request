@@ -124,7 +124,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 		async _exec() {
 			try {
-				await this._handleResponse(await axios({
+				return await this._handleResponse(await axios({
 					method: this._method,
 					url: this._apiUrl.href,
 					headers: this._headers,
