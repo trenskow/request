@@ -108,7 +108,12 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			if (!(error.response.data || {}).error) throw error;
 
-			throw ApiError.parse(error.response.data.error, error.response.status, this._apiUrl.href);
+			const message = error.response.data.error.message;
+
+			error = ApiError.parse(merge(true, error.response.data.error, { message: (message || {}).keyPath || message }), error.response.status, this._apiUrl.href);
+			error._options = merge(error._options || { parameters: (message || {}).parameters});
+
+			throw error;
 
 		}
 
