@@ -53,7 +53,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 					this._headers['Content-Type'] = opt.contentType;
 				} else {
 					this._headers['Content-Type'] = 'application/json; charset=utf-8';
-					opt.payload = JSON.stringify(opt.payload);
+					this._payload = Buffer.from(JSON.stringify(this._payload));
 				}
 			}
 
