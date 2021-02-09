@@ -11,7 +11,8 @@ const
 	merge = require('merge'),
 	CustomPromise = require('@trenskow/custom-promise'),
 	streamReader = require('@trenskow/stream-reader'),
-	isStream = require('is-stream');
+	isStream = require('is-stream'),
+	methods = require('methods');
 
 const
 	ApiError = require('@trenskow/apierror');
@@ -151,22 +152,12 @@ exports = module.exports = (baseUrl, options = {}) => {
 		return new RequestPromise(method, path, opt);
 	};
 
-	return merge(request, {
-		get: (path, opt) => {
-			return request('get', path, opt);
-		},
-		post: (path, opt) => {
-			return request('post', path, opt);
-		},
-		put: (path, opt) => {
-			return request('put', path, opt);
-		},
-		delete: (path, opt) => {
-			return request('delete', path, opt);
-		},
-		options: (path, opt) => {
-			return request('options', path, opt);
-		}
+	methods.forEach((method) => {
+		request[method] = (path, opt) => {
+			return request(method, path, opt);
+		};
 	});
+
+	return request;
 
 };
