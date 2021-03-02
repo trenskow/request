@@ -90,7 +90,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 		_convertResponse(response) {
 			if (/^application\/json/.test(response.headers['content-type'])) {
-				if (response.data instanceof ArrayBuffer) response.data = String.fromCharCode.apply(null, new Uint8Array(response.data));
+				if (isBrowser && response.data instanceof ArrayBuffer) response.data = new TextDecoder('utf-8').decode(new Uint8Array(response.data));
 				response.data = JSON.parse(response.data);
 			}
 			return response;
