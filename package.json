@@ -1,7 +1,7 @@
 {
   "name": "@trenskow/request",
-  "version": "0.4.2",
-  "description": "A small request library for usage with APIs that uses the `@trenskow/apierror` package.",
+  "version": "0.4.3",
+  "description": "A small request library for usage with APIs that uses the `@trenskow/api-error` package.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/trenskow/request#readme",
   "dependencies": {
-    "@trenskow/apierror": "^2.1.3",
+    "@trenskow/api-error": "^2.1.3",
     "@trenskow/custom-promise": "^0.9.1",
     "@trenskow/stream-reader": "^0.1.4",
     "axios": "^0.21.1",

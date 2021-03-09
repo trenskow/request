@@ -15,7 +15,7 @@ const
 	methods = require('methods');
 
 const
-	ApiError = require('@trenskow/apierror');
+	ApiError = require('@trenskow/api-error');
 
 exports = module.exports = (baseUrl, options = {}) => {
 

@@ -1,7 +1,7 @@
 @trenskow/request
 ----
 
-A small request library for usage with APIs that uses the [`@trenskow/apierror`](https://npmjs.org/package/@trenskow/apierror) package.
+A small request library for usage with APIs that uses the [`@trenskow/api-error`](https://npmjs.org/package/@trenskow/api-error) package.
 
 It is based of [Axios](https://github.com/axios/axios).
 
