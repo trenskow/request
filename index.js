@@ -36,17 +36,19 @@ exports = module.exports = (baseUrl, options = {}) => {
 			else if (path.indexOf('/') === -1) {
 				path = encodeURIComponent(path);
 			}
+
+			opt = opt || {};
 	
 			this._apiUrl = new URL(path, baseUrl);
 
 			let useOptions = {};
 
-			useOptions.headers = merge({}, options.headers, (opt || {}).headers || {});
-			useOptions.query = merge({}, options.query, (opt || {}).query || {});
+			useOptions.headers = merge({}, options.headers, opt.headers || {});
+			useOptions.query = merge({}, options.query, opt.query || {});
 
 			this._headers = useOptions.headers || {};
 			this._query = useOptions.query;
-			this._payload = (opt || {}).payload;
+			this._payload = opt.payload;
 
 			this._method = method;
 
