@@ -1,6 +1,6 @@
 {
   "name": "@trenskow/request",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "A small request library for usage with APIs that uses the `@trenskow/api-error` package.",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/trenskow/request#readme",
   "dependencies": {
-    "@trenskow/api-error": "^2.1.3",
+    "@trenskow/api-error": "^2.2.1",
     "@trenskow/custom-promise": "^0.9.1",
     "@trenskow/stream-reader": "^0.1.4",
     "axios": "^0.21.1",
