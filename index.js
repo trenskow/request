@@ -46,8 +46,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			this._headers = useOptions.headers || {};
 			this._query = useOptions.query;
-			this._payload = opt.payload;
-
+			this._payload = (opt || {}).payload;
 
 			this._method = method;
 
