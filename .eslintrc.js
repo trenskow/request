@@ -2,11 +2,7 @@ module.exports = {
 	'env': {
 		'es6': true,
 		'node': true,
-		'mocha': true,
 		'browser': true
-	},
-	'globals': {
-		'globalThis': false
 	},
 	'parserOptions': {
 		'ecmaVersion': 2017
@@ -15,7 +11,8 @@ module.exports = {
 	'rules': {
 		'indent': [
 			'error',
-			'tab'
+			'tab',
+			{ 'SwitchCase': 1 }
 		],
 		'linebreak-style': [
 			'error',
@@ -48,6 +45,18 @@ module.exports = {
 				'allowEmptyCatch': true
 			}
 		],
-		'require-atomic-updates': 'off'
+		'no-trailing-spaces': [
+			'error', {
+				'ignoreComments': true
+			}
+		],
+		'require-atomic-updates': 'off',
+		'no-implicit-globals': [
+			'error'
+		],
+		'eol-last': [
+			'error',
+			'always'
+		]
 	}
 };

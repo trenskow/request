@@ -4,7 +4,7 @@ const
 	{ isBrowser } = require('browser-or-node');
 
 const
-	URL = isBrowser ? window.URL : require('url').URL;
+	URL = isBrowser ? (window || {}).URL : require('url').URL;
 
 const
 	axios = require('axios'),
@@ -27,9 +27,9 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 		constructor(method, path, opt) {
 			super();
-			
+
 			path = path || '';
-	
+
 			if (Array.isArray(path)) {
 				path = path.map(encodeURIComponent).join('/');
 			}
@@ -38,7 +38,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 			}
 
 			opt = opt || {};
-	
+
 			this._apiUrl = new URL(path, baseUrl);
 
 			let useOptions = {};
@@ -63,6 +63,8 @@ exports = module.exports = (baseUrl, options = {}) => {
 				}
 			}
 
+			this._listeners = {};
+
 			setImmediate(() => {
 
 				this._exec()
@@ -71,11 +73,6 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			});
 
-		}
-
-		onResponse(responseCallback) {
-			this._responseCallback = responseCallback;
-			return this;
 		}
 
 		asStream() {
@@ -87,6 +84,18 @@ exports = module.exports = (baseUrl, options = {}) => {
 		asBuffer() {
 			this._resultType = 'buffer';
 			return this;
+		}
+
+		on(event, listener) {
+			this._listeners[event] = this._listeners[event] || [];
+			this._listeners[event].push(listener);
+			return this;
+		}
+
+		async _emit(event, ...args) {
+			await Promise.all((this._listeners[event] || []).map(async (listener) => {
+				await Promise.resolve(listener(...args));
+			}));
 		}
 
 		_isJSON(response) {
@@ -103,56 +112,74 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 		async _handleError(error) {
 
-			if (!(error.response)) throw error;
+			if (!(error.response)) return { result: error };
 
-			error.response = this._responseCallback ? (await Promise.resolve(this._responseCallback(error.response, error)) || error.response) : error.response;
-			
-			if (!(error.response || {}).data) throw error;
+			const status = error.response.status;
+
+			if (!(error.response || {}).data) return { status, result: error };
 
 			if (this._resultType === 'stream') error.response.data = await streamReader(error.response.data);
 
 			error.response = this._convertResponse(error.response);
 
-			if (!(error.response.data || {}).error) throw error;
+			if (!(error.response.data || {}).error) return { status, result: error };
 
 			const message = error.response.data.error.message;
 
 			error = ApiError.parse(merge(true, error.response.data.error, { message: (message || {}).keyPath || message }), error.response.status, this._apiUrl.href);
-			error._options = merge(error._options || { parameters: (message || {}).parameters});
+			error._options = merge(error._options || { parameters: (message || {}).parameters });
 
-			throw error;
+			return { status, result: error };
 
 		}
 
 		async _handleResponse(response) {
 
-			response = this._responseCallback ? (await Promise.resolve(this._responseCallback(response)) || response) : response;
+			const status = response.status;
 
-			if (this._resultType === 'stream') return response.data;
+			if (['buffer', 'stream'].includes(this._resultType)) {
+				return { status, result: response.data };
+			}
 
-			const buffer = response.data;
-
-			if (this._resultType === 'buffer') return buffer;
-
-			return this._convertResponse(response).data;
+			return { status, result: this._convertResponse(response).data };
 
 		}
 
 		async _exec() {
+
+			const request = {
+				method: this._method,
+				url: this._apiUrl.href,
+				headers: this._headers,
+				data: this._payload,
+				params: this._query,
+				responseType: this._resultType === 'stream' ? 'stream' : 'arraybuffer'
+			};
+
+			await this._emit('request', request);
+
+			let response;
+
 			try {
-				return await this._handleResponse(await axios({
-					method: this._method,
-					url: this._apiUrl.href,
-					headers: this._headers,
-					data: this._payload,
-					params: this._query,
-					responseType: this._resultType === 'stream' ? 'stream' : 'arraybuffer'}));
+				response = ['response', await this._handleResponse(await axios(request), request)];
 			} catch (error) {
-				await this._handleError(error);
+				response = ['error', await this._handleError(error, request)];
 			}
+
+			let [event, { status, result }] = response;
+
+			await this._emit(event, result, status, request);
+
+			switch (event) {
+				case 'response':
+					return result;
+				case 'error':
+					throw result;
+			}
+
 		}
-	
-	}	
+
+	}
 
 	const request = (method, path, opt) => {
 		return new RequestPromise(method, path, opt);
