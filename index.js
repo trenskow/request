@@ -55,9 +55,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 			this._resultType = 'parsed';
 
 			if (typeof opt.payload !== 'undefined') {
-				if (Buffer.isBuffer(opt.payload) || isStream.readable(opt.payload)) {
-					this._headers['Content-Type'] = opt.contentType;
-				} else {
+				if (!Buffer.isBuffer(opt.payload) && !isStream.readable(opt.payload)) {
 					this._headers['Content-Type'] = 'application/json; charset=utf-8';
 					this._payload = Buffer.from(JSON.stringify(this._payload));
 				}
@@ -110,38 +108,40 @@ exports = module.exports = (baseUrl, options = {}) => {
 			return response;
 		}
 
+		_details(response) {
+			return { status: response.status, headers: response.headers };
+		}
+
 		async _handleError(error) {
 
 			if (!(error.response)) return { result: error };
 
-			const status = error.response.status;
+			const response = error.response;
 
-			if (!(error.response || {}).data) return { status, result: error };
+			if (!(error.response || {}).data) return { details: this._details(response), result: error };
 
 			if (this._resultType === 'stream') error.response.data = await streamReader(error.response.data);
 
 			error.response = this._convertResponse(error.response);
 
-			if (!(error.response.data || {}).error) return { status, result: error };
+			if (!(error.response.data || {}).error) return { details: this._details(error.response), result: error };
 
 			const message = error.response.data.error.message;
 
 			error = ApiError.parse(merge(true, error.response.data.error, { message: (message || {}).keyPath || message }), error.response.status, this._apiUrl.href);
 			error._options = merge(error._options || { parameters: (message || {}).parameters });
 
-			return { status, result: error };
+			return { details: this._details(response), result: error };
 
 		}
 
 		async _handleResponse(response) {
 
-			const status = response.status;
-
 			if (['buffer', 'stream'].includes(this._resultType)) {
-				return { status, result: response.data };
+				return { details: this._details(response), result: response.data };
 			}
 
-			return { status, result: this._convertResponse(response).data };
+			return { details: this._details(response), result: this._convertResponse(response).data };
 
 		}
 
@@ -166,9 +166,9 @@ exports = module.exports = (baseUrl, options = {}) => {
 				response = ['error', await this._handleError(error, request)];
 			}
 
-			let [event, { status, result }] = response;
+			let [event, { details, result }] = response;
 
-			await this._emit(event, result, status, request);
+			await this._emit(event, result, details, request);
 
 			switch (event) {
 				case 'response':
