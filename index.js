@@ -12,7 +12,8 @@ const
 	CustomPromise = require('@trenskow/custom-promise'),
 	streamReader = require('@trenskow/stream-reader'),
 	isStream = require('is-stream'),
-	methods = require('methods');
+	methods = require('methods'),
+	caseit = require('@trenskow/caseit');
 
 const
 	ApiError = require('@trenskow/api-error');
@@ -53,6 +54,9 @@ exports = module.exports = (baseUrl, options = {}) => {
 			this._method = method;
 
 			this._resultType = 'parsed';
+			this._output = 'payload';
+
+			this._headerCasing = options.headerCasing || 'camel';
 
 			if (typeof opt.payload !== 'undefined') {
 				if (!Buffer.isBuffer(opt.payload) && !isStream.readable(opt.payload)) {
@@ -84,6 +88,11 @@ exports = module.exports = (baseUrl, options = {}) => {
 			return this;
 		}
 
+		withDetailedOutput() {
+			this._output = 'detailed';
+			return this;
+		}
+
 		on(event, listener) {
 			this._listeners[event] = this._listeners[event] || [];
 			this._listeners[event].push(listener);
@@ -108,8 +117,22 @@ exports = module.exports = (baseUrl, options = {}) => {
 			return response;
 		}
 
+		_caseHeaders(headers, type) {
+
+			if (this._headerCasing === 'none') return headers;
+
+			let result = {};
+
+			Object.keys(headers).forEach((key) => {
+				result[caseit(key, type || this._headerCasing)] = headers[key];
+			});
+
+			return result;
+
+		}
+
 		_details(response) {
-			return { status: response.status, headers: response.headers };
+			return { status: response.status, headers: this._caseHeaders(response.headers) };
 		}
 
 		async _handleError(error) {
@@ -150,7 +173,7 @@ exports = module.exports = (baseUrl, options = {}) => {
 			const request = {
 				method: this._method,
 				url: this._apiUrl.href,
-				headers: this._headers,
+				headers: this._caseHeaders(this._headers, 'http'),
 				data: this._payload,
 				params: this._query,
 				responseType: this._resultType === 'stream' ? 'stream' : 'arraybuffer'
@@ -172,7 +195,16 @@ exports = module.exports = (baseUrl, options = {}) => {
 
 			switch (event) {
 				case 'response':
-					return result;
+					switch (this._output) {
+						case 'detailed':
+							return {
+								payload: result,
+								status: details.status,
+								headers: details.headers
+							};
+						default:
+							return result;
+					}
 				case 'error':
 					throw result;
 			}
