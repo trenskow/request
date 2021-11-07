@@ -5,7 +5,8 @@ module.exports = {
 		'browser': true
 	},
 	'parserOptions': {
-		'ecmaVersion': 2017
+		'ecmaVersion': 2021,
+		'sourceType': 'module'
 	},
 	'extends': 'eslint:recommended',
 	'rules': {

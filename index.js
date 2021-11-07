@@ -1,24 +1,19 @@
 'use strict';
 
-const
-	{ isBrowser } = require('browser-or-node');
+import { isBrowser } from 'browser-or-node';
 
-const
-	URL = isBrowser ? (window || {}).URL : require('url').URL;
+import { URL } from 'url';
 
-const
-	axios = require('axios'),
-	merge = require('merge'),
-	CustomPromise = require('@trenskow/custom-promise'),
-	streamReader = require('@trenskow/stream-reader'),
-	isStream = require('is-stream'),
-	methods = require('methods'),
-	caseit = require('@trenskow/caseit');
+import axios from 'axios';
+import merge from 'merge';
+import CustomPromise from '@trenskow/custom-promise';
+import streamReader from '@trenskow/stream-reader';
+import { isStream } from 'is-stream';
+import methods from 'methods';
+import caseit from '@trenskow/caseit';
+import ApiError from '@trenskow/api-error';
 
-const
-	ApiError = require('@trenskow/api-error');
-
-exports = module.exports = (baseUrl, options = {}) => {
+export default (baseUrl, options = {}) => {
 
 	if (baseUrl === 'string') {
 		baseUrl = new URL(baseUrl);
