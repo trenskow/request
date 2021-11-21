@@ -6,7 +6,7 @@ import axios from 'axios';
 import merge from 'merge';
 import CustomPromise from '@trenskow/custom-promise';
 import streamReader from '@trenskow/stream-reader';
-import { isStream } from 'is-stream';
+import { isReadableStream } from 'is-stream';
 import methods from 'methods';
 import caseit from '@trenskow/caseit';
 import ApiError from '@trenskow/api-error';
@@ -52,7 +52,7 @@ export default (baseUrl, options = {}) => {
 			this._headerCasing = options.headerCasing || 'camel';
 
 			if (typeof opt.payload !== 'undefined') {
-				if (!Buffer.isBuffer(opt.payload) && !isStream.readable(opt.payload)) {
+				if (!Buffer.isBuffer(opt.payload) && !isReadableStream(opt.payload)) {
 					this._headers['Content-Type'] = 'application/json; charset=utf-8';
 					this._payload = Buffer.from(JSON.stringify(this._payload));
 				}
