@@ -1,5 +1,3 @@
-'use strict';
-
 import { isBrowser } from 'browser-or-node';
 
 import { URL } from 'url';
