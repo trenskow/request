@@ -1,7 +1,5 @@
 import { isBrowser } from 'browser-or-node';
 
-import { URL } from 'url';
-
 import axios from 'axios';
 import merge from 'merge';
 import CustomPromise from '@trenskow/custom-promise';
