@@ -28,7 +28,7 @@
     "@trenskow/custom-promise": "^0.10.3",
     "@trenskow/stream-reader": "^0.1.17",
     "axios": "^1.6.5",
-    "browser-or-node": "^2.1.1",
+    "browser-or-node": "^3.0.0-pre.0",
     "is-stream": "^3.0.0",
     "merge": "^2.1.1",
     "methods": "^1.1.2"
