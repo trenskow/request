@@ -29,7 +29,7 @@
     "@trenskow/stream-reader": "^0.1.18",
     "axios": "^1.6.7",
     "browser-or-node": "^3.0.0-pre.0",
-    "is-stream": "^3.0.0",
+    "is-stream": "^4.0.1",
     "merge": "^2.1.1",
     "methods": "^1.1.2"
   },
