@@ -1,39 +1,42 @@
 {
-  "name": "@trenskow/request",
-  "version": "1.0.51",
-  "description": "A small request library for usage with APIs that uses the `@trenskow/api-error` package.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/trenskow/request.git"
-  },
-  "keywords": [
-    "request",
-    "api",
-    "error"
-  ],
-  "author": "Kristian Trenskow <trenskow@me.com>",
-  "license": "BSD-2-Clause",
-  "bugs": {
-    "url": "https://github.com/trenskow/request/issues"
-  },
-  "type": "module",
-  "homepage": "https://github.com/trenskow/request#readme",
-  "dependencies": {
-    "@trenskow/api-error": "^2.4.15",
-    "@trenskow/caseit": "^1.3.15",
-    "@trenskow/custom-promise": "^0.12.0",
-    "@trenskow/stream-reader": "^0.1.21",
-    "axios": "^1.7.7",
-    "browser-or-node": "^3.0.0",
-    "is-stream": "^4.0.1",
-    "merge": "^2.1.1",
-    "methods": "^1.1.2"
-  },
-  "devDependencies": {
-    "eslint": "^9.12.0"
-  }
+	"name": "@trenskow/request",
+	"version": "1.0.51",
+	"description": "A small request library for usage with APIs that uses the `@trenskow/api-error` package.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/trenskow/request.git"
+	},
+	"keywords": [
+		"request",
+		"api",
+		"error"
+	],
+	"author": "Kristian Trenskow <trenskow@me.com>",
+	"license": "BSD-2-Clause",
+	"bugs": {
+		"url": "https://github.com/trenskow/request/issues"
+	},
+	"type": "module",
+	"homepage": "https://github.com/trenskow/request#readme",
+	"dependencies": {
+		"@trenskow/api-error": "^2.4.15",
+		"@trenskow/caseit": "^1.3.15",
+		"@trenskow/custom-promise": "^0.12.0",
+		"@trenskow/stream-reader": "^0.1.21",
+		"axios": "^1.7.7",
+		"browser-or-node": "^3.0.0",
+		"is-stream": "^4.0.1",
+		"merge": "^2.1.1",
+		"methods": "^1.1.2"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "^3.1.0",
+		"@eslint/js": "^9.13.0",
+		"eslint": "^9.13.0",
+		"globals": "^15.11.0"
+	}
 }
