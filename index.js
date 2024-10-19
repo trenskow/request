@@ -1,7 +1,7 @@
 import { isBrowser } from 'browser-or-node';
 
 import axios from 'axios';
-import merge from 'merge';
+import merge from '@trenskow/merge';
 import CustomPromise from '@trenskow/custom-promise';
 import streamReader from '@trenskow/stream-reader';
 import { isReadableStream } from 'is-stream';
@@ -142,7 +142,7 @@ export default (baseUrl, options = {}) => {
 
 			const message = error.response.data.error.message;
 
-			error = ApiError.parse(merge(true, error.response.data.error, { message: (message || {}).keyPath || message }), error.response.status, this._apiUrl.href);
+			error = ApiError.parse(merge({}, error.response.data.error, { message: (message || {}).keyPath || message }), error.response.status, this._apiUrl.href);
 			error._options = merge(error._options || { parameters: (message || {}).parameters });
 
 			return { details: this._details(response), result: error };
