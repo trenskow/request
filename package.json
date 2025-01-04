@@ -27,7 +27,7 @@
 		"@trenskow/caseit": "^1.4.6",
 		"@trenskow/custom-promise": "^0.13.3",
 		"@trenskow/merge": "^0.1.33",
-		"@trenskow/stream-reader": "^0.2.2",
+		"@trenskow/stream-reader": "^0.2.3",
 		"axios": "^1.7.9",
 		"browser-or-node": "^3.0.0",
 		"is-stream": "^4.0.1",
