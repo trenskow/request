@@ -23,10 +23,10 @@
 	"type": "module",
 	"homepage": "https://github.com/trenskow/request#readme",
 	"dependencies": {
-		"@trenskow/api-error": "^2.5.24",
+		"@trenskow/api-error": "^2.5.25",
 		"@trenskow/caseit": "^1.4.10",
-		"@trenskow/custom-promise": "^0.13.6",
-		"@trenskow/merge": "^0.1.37",
+		"@trenskow/custom-promise": "^0.13.7",
+		"@trenskow/merge": "^0.1.38",
 		"@trenskow/stream-reader": "^0.2.7",
 		"axios": "^1.8.4",
 		"browser-or-node": "^3.0.0",
