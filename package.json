@@ -23,9 +23,9 @@
 	"type": "module",
 	"homepage": "https://github.com/trenskow/request#readme",
 	"dependencies": {
-		"@trenskow/api-error": "^2.5.56",
+		"@trenskow/api-error": "^2.5.57",
 		"@trenskow/caseit": "^1.4.21",
-		"@trenskow/custom-promise": "^0.13.17",
+		"@trenskow/custom-promise": "^0.13.18",
 		"@trenskow/merge": "^0.1.52",
 		"@trenskow/stream-reader": "^0.2.18",
 		"axios": "^1.13.5",
