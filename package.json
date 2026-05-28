@@ -26,7 +26,7 @@
 		"@trenskow/api-error": "^2.5.64",
 		"@trenskow/caseit": "^1.4.24",
 		"@trenskow/custom-promise": "^0.13.21",
-		"@trenskow/merge": "^0.1.57",
+		"@trenskow/merge": "^0.1.58",
 		"@trenskow/stream-reader": "^0.2.23",
 		"axios": "^1.16.1",
 		"browser-or-node": "^3.0.0",
