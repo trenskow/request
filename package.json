@@ -23,7 +23,7 @@
 	"type": "module",
 	"homepage": "https://github.com/trenskow/request#readme",
 	"dependencies": {
-		"@trenskow/api-error": "^2.5.66",
+		"@trenskow/api-error": "^2.5.67",
 		"@trenskow/caseit": "^1.4.25",
 		"@trenskow/custom-promise": "^0.13.22",
 		"@trenskow/merge": "^0.1.59",
