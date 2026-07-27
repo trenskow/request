@@ -23,10 +23,10 @@
 	"type": "module",
 	"homepage": "https://github.com/trenskow/request#readme",
 	"dependencies": {
-		"@trenskow/api-error": "^2.5.74",
+		"@trenskow/api-error": "^2.5.75",
 		"@trenskow/caseit": "^1.4.28",
-		"@trenskow/custom-promise": "^0.13.25",
-		"@trenskow/merge": "^0.1.62",
+		"@trenskow/custom-promise": "^0.13.26",
+		"@trenskow/merge": "^0.1.63",
 		"@trenskow/stream-reader": "^0.2.27",
 		"axios": "^1.18.1",
 		"browser-or-node": "^3.0.0",
@@ -36,7 +36,7 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.6",
 		"@eslint/js": "^10.0.1",
-		"eslint": "^10.7.0",
-		"globals": "^17.7.0"
+		"eslint": "^10.8.0",
+		"globals": "^17.8.0"
 	}
 }
